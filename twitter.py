@@ -15,6 +15,3 @@ def retrieve_tweets_by_query(query):
     for tweet in tweets.data:
         data.append(tweet.text)
     return data
-data = retrieve_tweets_by_query("AI")
-
-print(extract_topics_from_tweets(data))

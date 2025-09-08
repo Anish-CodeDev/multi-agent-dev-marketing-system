@@ -50,6 +50,10 @@ def decide(state:AgentState):
         return "END"
 graph.add_node("agent",agent)
 def gen_content(state:AgentState):
+    with open(state['messages']) as f:
+        topics = f.read()
+    
+    topics = eval(topics)
     return {"messages":"content"}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
@@ -57,8 +61,7 @@ def gen_insights(state:AgentState):
     topics = extract_topics_from_tweets(topics)
     topics = eval(topics)
     with open("data/insights.txt",'a+') as f:
-        for topic in topics:
-            f.write(topic)
+        f.write(topics)
 
     return {"messages":"data/insights.txt"}
 def gen_design(state:AgentState):
@@ -87,10 +90,10 @@ graph.add_conditional_edges(
     }
 )
 # When things start working also trying to loop the agent communication
-graph.add_edge("gen_insights",END)
-graph.add_edge("content",END)
-graph.add_edge("design",END)
-graph.add_edge("posts",END)
+graph.add_edge("gen_insights","content")
+graph.add_edge("content","design")
+graph.add_edge("design","posts")
+graph.add_edge("posts","feedback")
 graph.add_edge("feedback",END)
 app = graph.compile()
 
