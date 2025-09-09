@@ -1,7 +1,9 @@
 import base64
 import requests
 import os
-user = ''
+from dotenv import load_dotenv
+user = 'Anish-CodeDev'
+load_dotenv()
 token = os.environ['GITHUB_TOKEN']
 
 class Readme:
@@ -19,10 +21,14 @@ class Readme:
 
         response = requests.get(headers=self.headers,url=self.url)
         self.data = response.json()
+        #print(self.data)
+        try:
 
-        content = base64.b64decode(self.data['content']).decode('utf-8')
-        print(content)
-        return content
+            content = base64.b64decode(self.data['content']).decode('utf-8')
+        #print(content)
+            return content
+        except KeyError as e:
+            return "An error occurred"
 
     def update_readme(self,new_data):
         new_data = base64.b64encode(new_data.encode('utf-8')).decode('utf-8')
@@ -41,3 +47,7 @@ class Readme:
         else:
             print("❌ Failed to update:")
             return "bad"
+
+readme = Readme("Desktop_AI_Agent")
+print(readme.load_readme())
+

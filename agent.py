@@ -8,8 +8,9 @@ from langgraph.graph.message import add_messages
 from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 from google import genai
-from gemini import extract_topics_from_tweets,extract_from_prompt
+from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme
 from twitter import retrieve_tweets_by_query
+from github import Readme
 load_dotenv()
 
 client = genai.Client()
@@ -54,7 +55,13 @@ def gen_content(state:AgentState):
         topics = f.read()
     
     topics = eval(topics)
-    return {"messages":"content"}
+    # Create a function in gemini two extract the repo link.
+    readme  = Readme("")
+    content = readme.load_readme()
+    new_content = create_content_for_readme(content,topics)
+    res = readme.update_readme(new_content)
+    
+    return {"messages":res}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
     tweets = retrieve_tweets_by_query(topic)
