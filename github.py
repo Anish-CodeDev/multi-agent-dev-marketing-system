@@ -47,7 +47,41 @@ class Readme:
         else:
             print("❌ Failed to update:")
             return "bad"
+    
 
-readme = Readme("Desktop_AI_Agent")
-print(readme.load_readme())
+def list_repos(username):
+    page = 1
+    repos = []
+    url = f"https://api.github.com/users/{username}/repos"
 
+    while True:
+        response = requests.get(url=url,params={"per_page":100,"page":page})
+        data = response.json()
+
+        if not data:
+            break
+        page+=1
+        print(data)
+        repos.extend([repo['name'] for repo in data])
+
+    return repos        
+
+def get_stars(username):
+    starred = {}
+    page = 1
+    url = f"https://api.github.com/users/{username}/repos"
+
+    while True:
+        response = requests.get(url=url,params={"per_page":100,'page':page})
+        data = response.json()
+
+        if not data:
+            break
+        page+=1
+
+        for repo in data:
+            starred[repo['name']] = repo['stargazers_count']
+    
+    return starred
+
+print(get_stars('Anish-CodeDev'))

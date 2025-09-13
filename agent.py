@@ -10,7 +10,7 @@ import asyncio
 from google import genai
 from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme
 from twitter import retrieve_tweets_by_query
-from github import Readme
+from github import Readme,list_repos
 load_dotenv()
 
 client = genai.Client()
@@ -51,16 +51,29 @@ def decide(state:AgentState):
         return "END"
 graph.add_node("agent",agent)
 def gen_content(state:AgentState):
-    with open(state['messages']) as f:
+    with open("data/insights.txt") as f:
         topics = f.read()
     
-    topics = eval(topics)
+    #topics = eval(topics)
+    # We're testing now
+    topics = ["Agentic AI","Usage of LLM's","LangGraph","Autonomous systems"]
     # Create a function in gemini two extract the repo link.
-    readme  = Readme("")
-    content = readme.load_readme()
-    new_content = create_content_for_readme(content,topics)
-    res = readme.update_readme(new_content)
-    
+    repos = list_repos('Anish-CodeDev')
+    for repo in repos:
+
+        readme  = Readme(repo)
+        content = readme.load_readme()
+        new_content = create_content_for_readme(content,topics)
+        print("I am suggesting an improvement, press Y if you like it and N if you don't like it")
+        print(new_content)
+        inp = input("Your choice: ")
+        if inp == "Y":
+
+        
+            res = readme.update_readme(new_content)
+
+        elif inp == "N":
+            res = 'The user did\'nt like it'
     return {"messages":res}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
@@ -97,11 +110,17 @@ graph.add_conditional_edges(
     }
 )
 # When things start working also trying to loop the agent communication
+graph.add_edge("content",END)
+graph.add_edge("gen_insights",END)
+graph.add_edge("design",END)
+graph.add_edge("posts",END)
+graph.add_edge("feedback",END)
+'''
 graph.add_edge("gen_insights","content")
 graph.add_edge("content","design")
 graph.add_edge("design","posts")
 graph.add_edge("posts","feedback")
-graph.add_edge("feedback",END)
+graph.add_edge("feedback",END)'''
 app = graph.compile()
 
 user_inp = input("User: ")
