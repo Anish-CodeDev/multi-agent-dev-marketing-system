@@ -8,9 +8,9 @@ from langgraph.graph.message import add_messages
 from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 from google import genai
-from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme
+from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less
 from twitter import retrieve_tweets_by_query
-from github import Readme,list_repos
+from github import Readme,list_repos,get_stars
 load_dotenv()
 
 client = genai.Client()
@@ -89,6 +89,16 @@ def gen_design(state:AgentState):
 def posts(state:AgentState):
     return {"messages":"posts"}
 def manage_feedback(state:AgentState):
+    starred = get_stars('Anish-CodeDev')
+    with open('data/repos_to_publicise.txt','r+') as f:
+        f.truncate(0)
+    for repo in starred:
+        decision = decide_with_stars_are_less(starred[repo])
+        if decision == "less":
+            with open('data/repos_to_publicise.txt','a') as f:
+                f.write(repo + '\n')
+        else:
+            print('It was good')
     return {"messages":"feedback"}
 graph.add_node("gen_insights",gen_insights)
 graph.add_node("content",gen_content)

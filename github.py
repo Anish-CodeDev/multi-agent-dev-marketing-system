@@ -84,4 +84,3 @@ def get_stars(username):
     
     return starred
 
-print(get_stars('Anish-CodeDev'))
