@@ -1,6 +1,7 @@
 from google import genai
 from dotenv import load_dotenv
 import base64
+from github import Readme
 load_dotenv()
 
 client  = genai.Client()
@@ -59,3 +60,23 @@ def decide_with_stars_are_less(stars):
         ]
     )
     return res.text
+def generate_post(repo,platform):
+    readme = Readme(repo)
+    readme_content = readme.load_readme()
+    res = client.models.generate_content(
+        model='gemini-2.5-flash-lite',
+        contents=[
+            f"""
+            You are given with the contents of a readme file enclosed within triple backticks, your job is to generate content for a {platform} post.
+            ```{readme_content}```
+            Your job is to return a final post which can be directly posted on the platform: {platform}, don't include any additional text.
+            
+            The link to the repo will be https://github.com/{repo}
+
+            Don't include multiple links to the repo.
+            """
+        ]
+    )
+    return res.text
+
+#print(generate_post('Desktop_AI_Agent','dev.to'))

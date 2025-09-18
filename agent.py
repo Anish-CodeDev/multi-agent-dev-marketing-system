@@ -8,7 +8,7 @@ from langgraph.graph.message import add_messages
 from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 from google import genai
-from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less
+from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post
 from twitter import retrieve_tweets_by_query
 from github import Readme,list_repos,get_stars
 load_dotenv()
@@ -26,7 +26,7 @@ def agent(state:AgentState):
     instruction = SystemMessage(content="""
         Consider the user's task and based on that:
         0 → Insight Agent - finds trending dev topics, keywords, opportunities.
-        1 → Content Agent - drafts posts, blogs, GitHub updates.
+        1 → Content Agent - Drafts changes for the readme files.
         2 → Design Helper Agent - creates diagrams, visuals, infographics.
         3 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
         4 → Feedback Agent - analyzes engagement (stars, likes, comments).
@@ -87,7 +87,15 @@ def gen_insights(state:AgentState):
 def gen_design(state:AgentState):
     return {"messages":"design"}
 def posts(state:AgentState):
-    return {"messages":"posts"}
+    with open("data/repos_to_publicise.txt",'r') as f:
+        repos_list = f.read()
+    
+    repos_list = repos_list.split('\n')
+    repos_list.remove('')
+    for repo in repos_list:
+        content = generate_post(repo,"X")
+        print(content)
+    return {"messages":"The content is shown above"}
 def manage_feedback(state:AgentState):
     starred = get_stars('Anish-CodeDev')
     with open('data/repos_to_publicise.txt','r+') as f:
