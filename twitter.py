@@ -4,7 +4,10 @@ from dotenv import load_dotenv
 from gemini import extract_topics_from_tweets
 load_dotenv()
 token = os.environ['BEARER_TOKEN']
-
+api_key = os.environ['API_KEY']
+api_secret = os.environ['API_SECRET']
+access_token = os.environ['ACCESS_TOKEN']
+access_token_secret = os.environ['ACCESS_TOKEN_SECRET']
 client = tweepy.Client(bearer_token=token)
 
 def retrieve_tweets_by_query(query):
@@ -15,3 +18,7 @@ def retrieve_tweets_by_query(query):
     for tweet in tweets.data:
         data.append(tweet.text)
     return data
+
+def public_tweet(text):
+    res = client.create_tweet(text=text)
+    return res
