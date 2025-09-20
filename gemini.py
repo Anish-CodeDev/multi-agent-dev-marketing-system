@@ -73,7 +73,7 @@ def generate_post(repo,platform):
             
             The link to the repo will be https://github.com/{repo}
 
-            Don't include multiple links to the repo.
+            Don't include multiple github links to the repo.
             """
         ]
     )

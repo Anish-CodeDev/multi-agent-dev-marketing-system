@@ -9,7 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 from google import genai
 from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post
-from twitter import retrieve_tweets_by_query
+from twitter import retrieve_tweets_by_query,post_tweets
 from github import Readme,list_repos,get_stars
 load_dotenv()
 
@@ -95,7 +95,10 @@ def posts(state:AgentState):
     for repo in repos_list:
         content = generate_post(repo,"X")
         print(content)
-    return {"messages":"The content is shown above"}
+        decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
+        if decision == "Y":
+            res = post_tweets(content)
+    return {"messages":"The draft was shown to you and decision was taken based on their will"}
 def manage_feedback(state:AgentState):
     starred = get_stars('Anish-CodeDev')
     with open('data/repos_to_publicise.txt','r+') as f:
