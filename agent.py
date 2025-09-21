@@ -138,8 +138,6 @@ graph.add_edge("posts",END)
 graph.add_edge("feedback",END)
 '''
 graph.add_edge("gen_insights","content")
-graph.add_edge("content","design")
-graph.add_edge("design","posts")
 graph.add_edge("posts","feedback")
 graph.add_edge("feedback",END)'''
 app = graph.compile()
