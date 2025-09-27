@@ -12,6 +12,7 @@ from google import genai
 from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post
 from twitter import retrieve_tweets_by_query,post_tweets
 from github import Readme,list_repos,get_stars
+from gemini import decide_intermediate_step_using_msg
 load_dotenv()
 
 client = genai.Client()
@@ -35,6 +36,8 @@ def agent(state:AgentState):
         Return with the index of the agent selected
             """)
     response = llm.invoke([instruction] + state['messages'])
+    with open("data/user_ques.txt",'w') as f:
+        f.write(state['messages'][-1].content)
     return {"messages":response}
 def decide(state:AgentState):
     if state["messages"][-1].content == '0':
@@ -75,7 +78,11 @@ def gen_content(state:AgentState):
 
         elif inp == "N":
             res = 'The user did\'nt like it'
-    return {"messages":res}
+            print(res)
+    
+    if res != 'The user did\'nt like it':
+        return {"messages":"The user did'nt like it"}
+    return {"messages":"The content of the README of the repo has been updated"}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
     tweets = retrieve_tweets_by_query(topic)
@@ -84,7 +91,7 @@ def gen_insights(state:AgentState):
     with open("data/insights.txt",'a+') as f:
         f.write(topics)
 
-    return {"messages":"data/insights.txt"}
+    return {"messages":"The insights have been generated."}
 def gen_design(state:AgentState):
     return {"messages":"design"}
 def posts(state:AgentState):
@@ -111,7 +118,7 @@ def manage_feedback(state:AgentState):
                 f.write(repo + '\n')
         else:
             print('It was good')
-    return {"messages":"feedback"}
+    return {"messages":"The repos with less numbers of stars have been noted"}
 graph.add_node("gen_insights",gen_insights)
 graph.add_node("content",gen_content)
 graph.add_node("design",gen_design)
@@ -132,17 +139,49 @@ graph.add_conditional_edges(
     }
 )
 # When things start working also trying to loop the agent communication
-graph.add_edge("content",END)
-graph.add_edge("gen_insights",END)
-graph.add_edge("design",END)
-graph.add_edge("posts",END)
-graph.add_edge("feedback",END)
+graph.add_edge("content","intermediate")
+graph.add_edge("gen_insights","intermediate")
+graph.add_edge("design","intermediate")
+graph.add_edge("posts","intermediate")
+graph.add_edge("feedback","intermediate")
 '''
 graph.add_edge("gen_insights","content")
 graph.add_edge("posts","feedback")
 graph.add_edge("feedback",END)'''
-app = graph.compile()
 
+def decide_intermediate_step(state:AgentState):
+    with open("data/user_ques.txt",'r') as f:
+        request = f.read()
+    res = decide_intermediate_step_using_msg(request,state['messages'][-1])
+    if res == '0':
+        return "insights"
+    if res == '1':
+        return "gen-content"
+    if res == '3':
+        return "posts"
+    
+    if res == "4":
+        return "feedback"
+graph.add_conditional_edges(
+    "intermediate",
+    decide_intermediate_step,
+    {
+        
+        "gen-content":"content",
+        "insights":"gen_insights",
+        "design":"design",
+        "posts":"posts",
+        "feedback":"feedback",
+        "END":END
+    }
+    
+)
+graph.add_edge("content","intermediate")
+graph.add_edge("gen_insights","intermediate")
+graph.add_edge("design","intermediate")
+graph.add_edge("posts","intermediate")
+graph.add_edge("feedback","intermediate")
+app = graph.compile()
 user_inp = input("User: ")
 conversational_history = []
 while user_inp !='exit':
