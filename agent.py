@@ -149,6 +149,9 @@ graph.add_edge("gen_insights","content")
 graph.add_edge("posts","feedback")
 graph.add_edge("feedback",END)'''
 
+def dummy_func_for_intermediate_node(state:AgentState):
+    return {"messages":state['messages']}
+graph.add_node("intermediate",dummy_func_for_intermediate_node)
 def decide_intermediate_step(state:AgentState):
     with open("data/user_ques.txt",'r') as f:
         request = f.read()
@@ -162,6 +165,8 @@ def decide_intermediate_step(state:AgentState):
     
     if res == "4":
         return "feedback"
+    else:
+        return "END"
 graph.add_conditional_edges(
     "intermediate",
     decide_intermediate_step,

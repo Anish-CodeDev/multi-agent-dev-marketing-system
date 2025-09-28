@@ -87,15 +87,15 @@ def decide_intermediate_step_using_msg(message,out_from_agent):
             f"""
             Given the user's request and previously completed action, suggest the next action from the below actions
 
+            Please note that if {out_from_agent} indicated a negative feedback from the user  your action is 5, don't return anything else. 
             0 → Insight Agent - finds trending dev topics, keywords, opportunities.
             1 → Content Agent - Drafts changes for the readme files.
             2 → Design Helper Agent - creates diagrams, visuals, infographics.
             3 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
             4 → Feedback Agent - analyzes engagement (stars, likes, comments).
-
+            5-> None of the above actions are suitable
             User's goal: {message}
             Output from agent: {out_from_agent}
-
             The regular flow is: generate insights->select repos which have less stars->modify the readme files->post on various platforms like twitter.
             Just return the index of the selected action without including any triple backticks
             """
@@ -103,4 +103,4 @@ def decide_intermediate_step_using_msg(message,out_from_agent):
     )
     return res.text
 #print(generate_post('Desktop_AI_Agent','dev.to'))
-#decide_intermediate_step("I want you to increase the popularity of all my repos","the repos have been modified based on the number of stars")
+print(decide_intermediate_step_using_msg("I want you to increase the popularity of all my repos","The user did'nt like any of the readme modifications"))
