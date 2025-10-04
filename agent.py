@@ -90,7 +90,7 @@ def gen_insights(state:AgentState):
     with open("data/insights.txt",'a+') as f:
         for topic in topics:
 
-            f.write(topics + '\n')
+            f.write(topic + '\n')
 
     return {"messages":"The insights have been generated."}
 def gen_design(state:AgentState):
@@ -188,10 +188,9 @@ graph.add_edge("design","intermediate")
 graph.add_edge("posts","intermediate")
 graph.add_edge("feedback","intermediate")
 app = graph.compile()
-user_inp = input("User: ")
 conversational_history = []
 if __name__ == "__main__":
-
+    user_inp = input("User: ")
     while user_inp !='exit':
         conversational_history.append(HumanMessage(content=user_inp))
         result = app.invoke({"messages":conversational_history})

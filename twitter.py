@@ -11,7 +11,7 @@ access_token_secret = os.environ['ACCESS_TOKEN_SECRET']
 client = tweepy.Client(bearer_token=token)
 
 def retrieve_tweets_by_query(query):
-    query =f"{query} lang:en -is:retweet"
+    query =f"{query} research, products lang:en -is:retweet"
     tweets = client.search_recent_tweets(query=query,max_results=10)
     data = []
 
