@@ -1,4 +1,3 @@
-# Next Time build connections(between agents)
 from typing import TypedDict,Sequence,Annotated
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph,START,END
@@ -60,7 +59,7 @@ def gen_content(state:AgentState):
     
     #topics = eval(topics)
     # We're testing now
-    topics = ["Agentic AI","Usage of LLM's","LangGraph","Autonomous systems"]
+    #topics = ["Agentic AI","Usage of LLM's","LangGraph","Autonomous systems"]
     # Create a function in gemini two extract the repo link.
     repos = list_repos('Anish-CodeDev')
     for repo in repos:
@@ -86,10 +85,12 @@ def gen_content(state:AgentState):
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
     tweets = retrieve_tweets_by_query(topic)
-    topics = extract_topics_from_tweets(topics)
+    topics = extract_topics_from_tweets(tweets)
     topics = eval(topics)
     with open("data/insights.txt",'a+') as f:
-        f.write(topics)
+        for topic in topics:
+
+            f.write(topics + '\n')
 
     return {"messages":"The insights have been generated."}
 def gen_design(state:AgentState):
@@ -189,9 +190,12 @@ graph.add_edge("feedback","intermediate")
 app = graph.compile()
 user_inp = input("User: ")
 conversational_history = []
-while user_inp !='exit':
-    conversational_history.append(HumanMessage(content=user_inp))
-    result = app.invoke({"messages":conversational_history})
-    conversational_history = result['messages']
-    print("AI: ",dict(conversational_history[-1])['content'])
-    user_inp = input("User: ")
+if __name__ == "__main__":
+
+    while user_inp !='exit':
+        conversational_history.append(HumanMessage(content=user_inp))
+        result = app.invoke({"messages":conversational_history})
+        conversational_history = result['messages']
+        print("AI: ",dict(conversational_history[-1])['content'])
+        user_inp = input("User: ")
+
