@@ -31,7 +31,9 @@ def agent(state:AgentState):
         2 → Design Helper Agent - creates diagrams, visuals, infographics.
         3 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
         4 → Feedback Agent - analyzes engagement (stars, likes, comments).
-                                                                      
+
+        The order of actions is Feedback->Insight->Content->Distribution        
+        For example if you need to execute the content agent, insight agent must be already executed with the positive response                                                      
         Return with the index of the agent selected
             """)
     response = llm.invoke([instruction] + state['messages'])

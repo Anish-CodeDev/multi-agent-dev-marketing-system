@@ -12,7 +12,8 @@ class Readme:
         self.repo = repo
         self.url = f"https://api.github.com/repos/{user}/{repo}/contents/README.md"
         self.data = {}
-        self.headers = None
+        self.headers = {"Authorization": f"Bearer {token}",
+                        "Accept": "application/vnd.github+json"}
     def load_readme(self):
 
 
@@ -36,7 +37,8 @@ class Readme:
         update_data = {
         "message": "Update README",
         "content": new_data,
-        "sha": self.data["sha"]  # required to update
+        "sha": self.data["sha"],
+        "branch":"main"               # required to update
         }
 
         response = requests.put(url=self.url,headers=self.headers,json=update_data)
