@@ -86,8 +86,7 @@ def gen_content(state:AgentState):
     return {"messages":"The content of the README of the repo has been updated"}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
-    tweets = retrieve_tweets_by_query(topic)
-    topics = extract_topics_from_tweets(tweets)
+    topics = retrieve_tweets_by_query(topic)
     topics = eval(topics)
     with open("data/insights.txt",'a+') as f:
         for topic in topics:
