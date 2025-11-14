@@ -102,5 +102,21 @@ def decide_intermediate_step_using_msg(message,out_from_agent):
         ]
     )
     return res.text
+def get_recent_topics(topic):
+    res = client.models.generate_content(
+        model='gemini-2.5-flash-lite',
+        contents=[
+            f"""
+            Given the topic: {topic}, your job is to get me a list of topics in this field using your search tool.
+            
+            The maximum number of topics must be fifteen and not more than that.
+            Just return a list(python datatype) of the various topics and nothing else
+            """
+        ]
+    )
+    return(eval(res.text.replace('`','').replace('python','')))
 #print(generate_post('Desktop_AI_Agent','dev.to'))
-print(decide_intermediate_step_using_msg("I want you to increase the popularity of all my repos","The user did'nt like any of the readme modifications"))
+if __name__ == "__main__":
+    print(get_recent_topics("Agentic AI"))
+    #print(decide_intermediate_step_using_msg("I want you to increase the popularity of all my repos","The user did'nt like any of the readme modifications"))
+

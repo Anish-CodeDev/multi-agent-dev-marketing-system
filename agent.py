@@ -8,7 +8,7 @@ from langgraph.graph.message import add_messages
 from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 from google import genai
-from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post
+from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post,get_recent_topics
 from twitter import retrieve_tweets_by_query,post_tweets
 from github import Readme,list_repos,get_stars
 from gemini import decide_intermediate_step_using_msg
@@ -86,9 +86,8 @@ def gen_content(state:AgentState):
     return {"messages":"The content of the README of the repo has been updated"}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
-    topics = retrieve_tweets_by_query(topic)
-    topics = eval(topics)
-    with open("data/insights.txt",'a+') as f:
+    topics = get_recent_topics(topic)
+    with open("data/insights.txt",'w') as f:
         for topic in topics:
 
             f.write(topic + '\n')

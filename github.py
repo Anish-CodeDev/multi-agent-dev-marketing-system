@@ -12,7 +12,7 @@ class Readme:
         self.repo = repo
         self.url = f"https://api.github.com/repos/{user}/{repo}/contents/README.md"
         self.data = {}
-        self.headers = {"Authorization": f"Bearer {token}",
+        self.headers = {"Authorization": f"token {token}",
                         "Accept": "application/vnd.github+json"}
     def load_readme(self):
 
@@ -33,7 +33,7 @@ class Readme:
 
     def update_readme(self,new_data):
         new_data = base64.b64encode(new_data.encode('utf-8')).decode('utf-8')
-
+        _ = self.load_readme()
         update_data = {
         "message": "Update README",
         "content": new_data,
@@ -47,7 +47,7 @@ class Readme:
             print("✅ README updated successfully!")
             return "good"
         else:
-            print("❌ Failed to update:")
+            print("❌ Failed to update:",response.status_code)
             return "bad"
     
 
