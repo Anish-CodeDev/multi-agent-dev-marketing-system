@@ -1,7 +1,7 @@
 from google import genai
 from dotenv import load_dotenv
 import base64
-from github import Readme
+from github_functions import Readme
 load_dotenv()
 
 client  = genai.Client()
@@ -110,7 +110,7 @@ def get_recent_topics(topic):
             Given the topic: {topic}, your job is to get me a list of topics in this field using your search tool.
             
             The maximum number of topics must be fifteen and not more than that.
-            Just return a list(python datatype) of the various topics and nothing else
+            Just return a list(python datatype) of the various topics and NOTHING OTHER THAN THE LIST.
             """
         ]
     )

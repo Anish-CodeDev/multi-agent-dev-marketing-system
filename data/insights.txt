@@ -1,15 +1,15 @@
 Autonomous agents in AI
-AI agent architectures
+AI agents and decision-making
+Agent architectures for AI
 Multi-agent systems
-Agent-based modeling
-AI agent communication
-AI agent learning
-AI agent reasoning
-AI agent planning
-AI agent decision making
-Human-agent interaction
-AI agent ethics
-AI agent applications
-Agent reinforcement learning
-Large Language Model agents
-Agent orchestration
+Human-AI interaction in agentic AI
+AI agents in complex environments
+Ethical considerations in agentic AI
+Reinforcement learning for agentic AI
+Agentic AI for task automation
+Agentic AI for creative applications
+Agentic AI for robotics
+Explainable AI for agents
+Agentic AI in game development
+Tool use in agentic AI
+Agentic AI for personalized experiences

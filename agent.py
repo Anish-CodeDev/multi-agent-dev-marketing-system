@@ -10,7 +10,7 @@ import asyncio
 from google import genai
 from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post,get_recent_topics
 from twitter import retrieve_tweets_by_query,post_tweets
-from github import Readme,list_repos,get_stars
+from github_functions import Readme,list_repos,get_stars
 from gemini import decide_intermediate_step_using_msg
 load_dotenv()
 
@@ -32,8 +32,10 @@ def agent(state:AgentState):
         3 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
         4 → Feedback Agent - analyzes engagement (stars, likes, comments).
 
-        The order of actions is Feedback->Insight->Content->Distribution        
-        For example if you need to execute the content agent, insight agent must be already executed with the positive response                                                      
+        The order of actions is Feedback->Insight->Content->Distribution    
+        Donot execute these agents more than once(no repetetion)    
+        For example if you need to execute the content agent, insight agent must be already executed with the positive response.
+        If you feel you have satisfied the user's question return END                                                    
         Return with the index of the agent selected
             """)
     response = llm.invoke([instruction] + state['messages'])

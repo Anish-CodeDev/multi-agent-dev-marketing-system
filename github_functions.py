@@ -2,6 +2,7 @@ import base64
 import requests
 import os
 from dotenv import load_dotenv
+from github import Github
 user = 'Anish-CodeDev'
 load_dotenv()
 token = os.environ['GITHUB_TOKEN']
@@ -14,6 +15,7 @@ class Readme:
         self.data = {}
         self.headers = {"Authorization": f"token {token}",
                         "Accept": "application/vnd.github+json"}
+        self.g = Github(token)
     def load_readme(self):
 
 
@@ -32,23 +34,24 @@ class Readme:
             return "An error occurred"
 
     def update_readme(self,new_data):
-        new_data = base64.b64encode(new_data.encode('utf-8')).decode('utf-8')
-        _ = self.load_readme()
-        update_data = {
-        "message": "Update README",
-        "content": new_data,
-        "sha": self.data["sha"],
-        "branch":"main"               # required to update
-        }
+        try:
 
-        response = requests.put(url=self.url,headers=self.headers,json=update_data)
+            #new_data = base64.b64encode(new_data.encode('utf-8')).decode('utf-8')
+            repo = self.g.get_repo(user + '/' + self.repo)
+            readme_file = repo.get_contents("README.md")
+            print(self.data['sha'])
+            repo.update_file(
+                path='README.md',
+                message="15th Nov 2025",
+                content=new_data,
+                sha=readme_file.sha,
+                branch='main'
+            )
+            print("The readme was updated")
+        except:
+            print("An error occurred")
+        
 
-        if response.status_code == 200 or response.status_code == 201:
-            print("✅ README updated successfully!")
-            return "good"
-        else:
-            print("❌ Failed to update:",response.status_code)
-            return "bad"
     
 
 def list_repos(username):
