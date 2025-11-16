@@ -1,6 +1,5 @@
 Desktop_AI_Agent
 Maps_pix2pix
 mcp_servers
-multi-agent-dev-marketing-system
 Personal_AI_Agent
 VLM-Using-Pytorch

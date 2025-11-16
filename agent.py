@@ -9,6 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 from google import genai
 from gemini import extract_topics_from_tweets,extract_from_prompt,create_content_for_readme,decide_with_stars_are_less,generate_post,get_recent_topics
+from gemini import extract_repo_name_from_inp
 from twitter import retrieve_tweets_by_query,post_tweets
 from github_functions import Readme,list_repos,get_stars
 from gemini import decide_intermediate_step_using_msg
@@ -35,7 +36,7 @@ def agent(state:AgentState):
         The order of actions is Feedback->Insight->Content->Distribution    
         Donot execute these agents more than once(no repetetion)    
         For example if you need to execute the content agent, insight agent must be already executed with the positive response.
-        If you feel you have satisfied the user's question return END                                                    
+        If you feel you have satisfied the user's question return END ie, your actions fulfil the user's requirements                                                    
         Return with the index of the agent selected
             """)
     response = llm.invoke([instruction] + state['messages'])
@@ -65,27 +66,45 @@ def gen_content(state:AgentState):
     # We're testing now
     #topics = ["Agentic AI","Usage of LLM's","LangGraph","Autonomous systems"]
     # Create a function in gemini two extract the repo link.
-    repos = list_repos('Anish-CodeDev')
-    for repo in repos:
+    res = extract_repo_name_from_inp(state['messages'])
+    if res == "False":
 
-        readme  = Readme(repo)
-        content = readme.load_readme()
-        new_content = create_content_for_readme(content,topics)
-        print("I am suggesting an improvement, press Y if you like it and N if you don't like it")
-        print(new_content)
-        inp = input("Your choice: ")
-        if inp == "Y":
+        repos = list_repos('Anish-CodeDev')
+        for repo in repos:
 
+            readme  = Readme(repo)
+            content = readme.load_readme()
+            new_content = create_content_for_readme(content,topics)
+            print("I am suggesting an improvement, press Y if you like it and N if you don't like it")
+            print(new_content)
+            inp = input("Your choice: ")
+            if inp == "Y":
+
+            
+                res = readme.update_readme(new_content)
+
+            elif inp == "N":
+                res = 'The user did\'nt like it'
+                print(res)
         
-            res = readme.update_readme(new_content)
+        if res != 'The user did\'nt like it':
+            return {"messages":"The user did'nt like it"}
+    else:
+            readme  = Readme(res)
+            content = readme.load_readme()
+            new_content = create_content_for_readme(content,topics)
+            print("I am suggesting an improvement, press Y if you like it and N if you don't like it")
+            print(new_content)
+            inp = input("Your choice: ")
+            if inp == "Y":
 
-        elif inp == "N":
-            res = 'The user did\'nt like it'
-            print(res)
-    
-    if res != 'The user did\'nt like it':
-        return {"messages":"The user did'nt like it"}
-    return {"messages":"The content of the README of the repo has been updated"}
+            
+                res = readme.update_readme(new_content)
+
+            elif inp == "N":
+                res = 'The user did\'nt like it'
+                print(res)
+    return {"messages":"The content of the README of the repo has been updated, what else do you want me to do"}
 def gen_insights(state:AgentState):
     topic = extract_from_prompt(state['messages'])
     topics = get_recent_topics(topic)
@@ -109,7 +128,7 @@ def posts(state:AgentState):
         decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
         if decision == "Y":
             res = post_tweets(content)
-    return {"messages":"The draft was shown to you and decision was taken based on their will"}
+    return {"messages":"The draft was shown to you and decision was taken based on your will"}
 def manage_feedback(state:AgentState):
     starred = get_stars('Anish-CodeDev')
     with open('data/repos_to_publicise.txt','r+') as f:

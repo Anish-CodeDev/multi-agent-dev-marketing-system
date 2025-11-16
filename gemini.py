@@ -115,8 +115,21 @@ def get_recent_topics(topic):
         ]
     )
     return(eval(res.text.replace('`','').replace('python','')))
+def extract_repo_name_from_inp(inp:str):
+    res = client.models.generate_content(
+        model='gemini-2.5-flash-lite',
+        contents=[
+            f"""
+            Your are given with the user's request: {inp}.
+            Your job is to return the repo name specified by the user, just return the repo name and nothing else.
+            If the user hasn't specified the repo name just return False and nothing else.
+            """
+        ]
+    )
+    return res.text
 #print(generate_post('Desktop_AI_Agent','dev.to'))
 if __name__ == "__main__":
-    print(get_recent_topics("Agentic AI"))
+    #print(get_recent_topics("Agentic AI"))
+    extract_repo_name_from_inp("I want you to enhance the contents of the readme file of all my repos")
     #print(decide_intermediate_step_using_msg("I want you to increase the popularity of all my repos","The user did'nt like any of the readme modifications"))
 
