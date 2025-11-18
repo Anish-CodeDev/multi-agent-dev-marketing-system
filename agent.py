@@ -28,9 +28,9 @@ def agent(state:AgentState):
     instruction = SystemMessage(content="""
         Consider the user's task and based on that:
         0 → Insight Agent - finds trending dev topics, keywords, opportunities.
-        1 → Content Agent - Drafts changes for the readme files.
+        1 → Content Agent - Drafts changes for the readme files(Only for github).
         2 → Design Helper Agent - creates diagrams, visuals, infographics.
-        3 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
+        3 → Distribution Agent - posts/schedules across linkedIn, Twitter and not Github.
         4 → Feedback Agent - analyzes engagement (stars, likes, comments).
 
         The order of actions is Feedback->Insight->Content->Distribution    
@@ -125,8 +125,10 @@ def posts(state:AgentState):
     for repo in repos_list:
         content = generate_post(repo,"X")
         print(content)
+
         decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
         if decision == "Y":
+
             res = post_tweets(content)
     return {"messages":"The draft was shown to you and decision was taken based on your will"}
 def manage_feedback(state:AgentState):

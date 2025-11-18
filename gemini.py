@@ -74,6 +74,8 @@ def generate_post(repo,platform):
             The link to the repo will be https://github.com/{repo}
 
             Don't include multiple github links to the repo.
+
+            Also the maximum length of the characters of the post must not be more than 200.
             """
         ]
     )
