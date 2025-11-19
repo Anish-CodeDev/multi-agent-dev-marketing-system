@@ -1,15 +1,15 @@
 Defining Agentic AI
-Core Capabilities of Agentic AI
-Architecture of Agentic AI Systems
-Agentic AI and Large Language Models (LLMs)
-Types of Agents in Agentic AI (e.g., autonomous, collaborative)
-Key challenges in developing Agentic AI
-Ethical considerations of Agentic AI
-Applications of Agentic AI in various industries
-Tools and frameworks for Agentic AI development
-The role of planning and reasoning in Agentic AI
-Human-Agent Interaction in Agentic AI
-Agentic AI for task automation
-Agentic AI for decision support
-The future of Agentic AI
-Research frontiers in Agentic AI
+Key Components of Agentic AI
+Autonomy in AI Agents
+Goal-Oriented AI Systems
+Decision-Making Processes in AI Agents
+Learning and Adaptation in AI Agents
+Multi-Agent Systems
+Agent Architectures
+Human-Agent Collaboration
+Ethical Considerations of Agentic AI
+Applications of Agentic AI (e.g., Robotics, Personal Assistants, Autonomous Vehicles)
+Challenges in Developing Agentic AI
+Future Trends in Agentic AI
+Evaluation Metrics for Agentic AI
+Explainability of Agentic AI

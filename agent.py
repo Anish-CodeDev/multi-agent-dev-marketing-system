@@ -119,11 +119,20 @@ def gen_design(state:AgentState):
 def posts(state:AgentState):
     with open("data/repos_to_publicise.txt",'r') as f:
         repos_list = f.read()
-    
-    repos_list = repos_list.split('\n')
-    repos_list.remove('')
-    for repo in repos_list:
-        content = generate_post(repo,"X")
+    res = extract_repo_name_from_inp(state['messages'])
+    if res == "False":
+        repos_list = repos_list.split('\n')
+        repos_list.remove('')
+        for repo in repos_list:
+            content = generate_post(repo,"X")
+            print(content)
+
+        decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
+        if decision == "Y":
+
+            res = post_tweets(content)
+    else:
+        content = generate_post(res,"X")
         print(content)
 
         decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")

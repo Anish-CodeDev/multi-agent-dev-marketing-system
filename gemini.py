@@ -71,11 +71,11 @@ def generate_post(repo,platform):
             ```{readme_content}```
             Your job is to return a final post which can be directly posted on the platform: {platform}, don't include any additional text.
             
-            The link to the repo will be https://github.com/{repo}
+            The link to the repo will be https://github.com/Anish-CodeDev/{repo}
 
             Don't include multiple github links to the repo.
 
-            Also the maximum length of the characters of the post must not be more than 200.
+            Also the maximum length of the characters of the post must not be more than 150.
             """
         ]
     )
