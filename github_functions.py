@@ -50,7 +50,17 @@ class Readme:
             print("The readme was updated")
         except:
             print("An error occurred")
-        
+
+    def update_about(self,content):
+        try:
+            repo = self.g.get_repo(user + '/' + self.repo)
+            repo.edit(
+                description=content
+            )
+            print("The about was updated")
+        except Exception as e:
+            print(repo.permissions)
+            print("An error occurred: ",str(e))
 
     
 
@@ -89,3 +99,7 @@ def get_stars(username):
     
     return starred
 
+
+if __name__ == "__main__":
+    readme = Readme("multi-agent-dev-marketing-system")
+    readme.update_about("test")

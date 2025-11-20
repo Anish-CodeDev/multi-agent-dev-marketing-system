@@ -1,15 +1,15 @@
-Defining Agentic AI
-Key Components of Agentic AI
-Autonomy in AI Agents
-Goal-Oriented AI Systems
-Decision-Making Processes in AI Agents
-Learning and Adaptation in AI Agents
-Multi-Agent Systems
-Agent Architectures
-Human-Agent Collaboration
-Ethical Considerations of Agentic AI
-Applications of Agentic AI (e.g., Robotics, Personal Assistants, Autonomous Vehicles)
-Challenges in Developing Agentic AI
-Future Trends in Agentic AI
-Evaluation Metrics for Agentic AI
-Explainability of Agentic AI
+Defining Agentic AI and its core principles
+Autonomy in AI agents
+Decision-making frameworks for agentic AI
+Goal-oriented AI agents
+Reinforcement learning for agentic AI
+Multi-agent systems and cooperation
+Human-AI interaction and collaboration with agents
+Ethical considerations in agentic AI
+Safety and alignment of autonomous agents
+Applications of agentic AI (e.g., robotics, gaming, virtual assistants)
+Agent architectures and design patterns
+Memory and learning in agentic AI
+Planning and reasoning capabilities of AI agents
+Evaluation metrics for agentic AI performance
+Future trends and challenges in agentic AI development

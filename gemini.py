@@ -91,11 +91,13 @@ def decide_intermediate_step_using_msg(message,out_from_agent):
 
             Please note that if {out_from_agent} indicated a negative feedback from the user  your action is 5, don't return anything else. 
             0 → Insight Agent - finds trending dev topics, keywords, opportunities.
-            1 → Content Agent - Drafts changes for the readme files.
-            2 → Design Helper Agent - creates diagrams, visuals, infographics.
-            3 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
-            4 → Feedback Agent - analyzes engagement (stars, likes, comments).
-            5-> None of the above actions are suitable
+            1 → About Repo Agent - updates the about section of the repo.
+            2 → Content Agent - Drafts changes for the readme files.
+            3 → Design Helper Agent - creates diagrams, visuals, infographics.
+            4 → Distribution Agent - posts/schedules across GitHub, LinkedIn, Twitter.
+            5 → Feedback Agent - analyzes engagement (stars, likes, comments).
+
+            6-> None of the above actions are suitable
             User's goal: {message}
             Output from agent: {out_from_agent}
             The regular flow is: generate insights->select repos which have less stars->modify the readme files->post on various platforms like twitter.
@@ -129,9 +131,26 @@ def extract_repo_name_from_inp(inp:str):
         ]
     )
     return res.text
+
+def generate_about_repo(repo,topic):
+    readme = Readme(repo)
+    readme_content = readme.load_readme()
+    res = client.models.generate_content(
+        model='gemini-2.5-flash-lite',
+        contents=[
+            f"""
+            Your job is to generate a two-line description of the repo based on the readme content: {readme_content}
+            
+            DONOT Include Any Special Characters
+            The topic of the repo is: {topic}
+            """
+        ]
+    )
+    return res.text
 #print(generate_post('Desktop_AI_Agent','dev.to'))
 if __name__ == "__main__":
     #print(get_recent_topics("Agentic AI"))
-    extract_repo_name_from_inp("I want you to enhance the contents of the readme file of all my repos")
+    #extract_repo_name_from_inp("I want you to enhance the contents of the readme file of all my repos")
     #print(decide_intermediate_step_using_msg("I want you to increase the popularity of all my repos","The user did'nt like any of the readme modifications"))
+    print(generate_about_repo('Desktop_AI_Agent','Agentic AI'))
 

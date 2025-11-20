@@ -12,7 +12,7 @@ from gemini import extract_topics_from_tweets,extract_from_prompt,create_content
 from gemini import extract_repo_name_from_inp
 from twitter import retrieve_tweets_by_query,post_tweets
 from github_functions import Readme,list_repos,get_stars
-from gemini import decide_intermediate_step_using_msg
+from gemini import decide_intermediate_step_using_msg,generate_about_repo
 load_dotenv()
 
 client = genai.Client()
@@ -28,12 +28,13 @@ def agent(state:AgentState):
     instruction = SystemMessage(content="""
         Consider the user's task and based on that:
         0 → Insight Agent - finds trending dev topics, keywords, opportunities.
-        1 → Content Agent - Drafts changes for the readme files(Only for github).
-        2 → Design Helper Agent - creates diagrams, visuals, infographics.
-        3 → Distribution Agent - posts/schedules across linkedIn, Twitter and not Github.
-        4 → Feedback Agent - analyzes engagement (stars, likes, comments).
+        1-> About Repo Agent- generates a two-line description of the repo(Only for github).
+        2 → Content Agent - Drafts changes for the readme files(Only for github).
+        3 → Design Helper Agent - creates diagrams, visuals, infographics.
+        4 → Distribution Agent - posts/schedules across linkedIn, Twitter and not Github.
+        5 → Feedback Agent - analyzes engagement (stars, likes, comments).
 
-        The order of actions is Feedback->Insight->Content->Distribution    
+        The order of actions is Feedback->Insight->About Repo->Content->Distribution    
         Donot execute these agents more than once(no repetetion)    
         For example if you need to execute the content agent, insight agent must be already executed with the positive response.
         If you feel you have satisfied the user's question return END ie, your actions fulfil the user's requirements                                                    
@@ -48,12 +49,14 @@ def decide(state:AgentState):
 
         return "insights"
     elif state["messages"][-1].content == '1':
-        return "gen-content"
+        return "about-repo"
     elif state["messages"][-1].content == '2':
-        return "design"
+        return "gen-content"
     elif state["messages"][-1].content == '3':
-        return "posts"
+        return "design"
     elif state["messages"][-1].content == '4':
+        return "posts"
+    elif state["messages"][-1].content == '5':
         return "feedback"
     else:
         return "END"
@@ -152,11 +155,41 @@ def manage_feedback(state:AgentState):
         else:
             print('It was good')
     return {"messages":"The repos with less numbers of stars have been noted"}
+
+def about_repo(state:AgentState):
+    with open("data/repos_to_publicise.txt",'r') as f:
+        repos_list = f.read()
+    res = extract_repo_name_from_inp(state['messages'])
+    with open("data/insights.txt") as f:
+        topics = f.read()
+    topics = topics.split('\n')
+    if res == "False":
+        repos_list = repos_list.split('\n')
+        repos_list.remove('')
+        for repo in repos_list:
+            content = generate_about_repo(repo,topics)
+            print(content)
+
+        decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
+        if decision == "Y":
+
+            readme = Readme(repo)
+            readme.update_about(content)
+    else:
+        content = generate_about_repo(res,topics)
+        print(content)
+        decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
+        if decision == "Y":
+            readme = Readme(res)
+            readme.update_about(content)
+            
+    return {"messages":"about repo"}
 graph.add_node("gen_insights",gen_insights)
 graph.add_node("content",gen_content)
 graph.add_node("design",gen_design)
 graph.add_node("posts",posts)
 graph.add_node("feedback",manage_feedback)
+graph.add_node("about_repo",about_repo)
 graph.add_edge(START,"agent")
 # Later add a return value for communication between agents
 graph.add_conditional_edges(
@@ -168,6 +201,7 @@ graph.add_conditional_edges(
         "design":"design",
         "posts":"posts",
         "feedback":"feedback",
+        "about-repo":"about_repo",
         "END":END
     }
 )
@@ -177,6 +211,7 @@ graph.add_edge("gen_insights","intermediate")
 graph.add_edge("design","intermediate")
 graph.add_edge("posts","intermediate")
 graph.add_edge("feedback","intermediate")
+graph.add_edge("about_repo","intermediate")
 '''
 graph.add_edge("gen_insights","content")
 graph.add_edge("posts","feedback")
@@ -192,11 +227,13 @@ def decide_intermediate_step(state:AgentState):
     if res == '0':
         return "insights"
     if res == '1':
+        return "about-repo"
+    if res == '2':
         return "gen-content"
-    if res == '3':
+    if res == '4':
         return "posts"
     
-    if res == "4":
+    if res == "5":
         return "feedback"
     else:
         return "END"
@@ -210,6 +247,7 @@ graph.add_conditional_edges(
         "design":"design",
         "posts":"posts",
         "feedback":"feedback",
+        "about-repo":"about_repo",
         "END":END
     }
     
@@ -219,6 +257,7 @@ graph.add_edge("gen_insights","intermediate")
 graph.add_edge("design","intermediate")
 graph.add_edge("posts","intermediate")
 graph.add_edge("feedback","intermediate")
+graph.add_edge("about_repo","intermediate")
 app = graph.compile()
 conversational_history = []
 if __name__ == "__main__":
