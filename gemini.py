@@ -2,6 +2,7 @@ from google import genai
 from dotenv import load_dotenv
 import base64
 from github_functions import Readme
+import re
 load_dotenv()
 
 client  = genai.Client()
@@ -146,8 +147,11 @@ def generate_about_repo(repo,topic):
             """
         ]
     )
-    return res.text
+    return clean_llm_output(res.text)
 #print(generate_post('Desktop_AI_Agent','dev.to'))
+def clean_llm_output(llm_output):
+    res = re.sub(r'[\r\n\t]+', ' ', llm_output)
+    return re.sub(r'\s+',' ',res).strip()
 if __name__ == "__main__":
     #print(get_recent_topics("Agentic AI"))
     #extract_repo_name_from_inp("I want you to enhance the contents of the readme file of all my repos")

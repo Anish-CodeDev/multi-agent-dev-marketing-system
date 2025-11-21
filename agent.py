@@ -170,18 +170,20 @@ def about_repo(state:AgentState):
             content = generate_about_repo(repo,topics)
             print(content)
 
-        decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
-        if decision == "Y":
+            decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
+            if decision == "Y":
 
-            readme = Readme(repo)
-            readme.update_about(content)
+                readme = Readme(repo)
+                res = readme.update_about(content)
+            
     else:
         content = generate_about_repo(res,topics)
         print(content)
         decision = input("Press Y if you want me to publish the post and press N if you did'nt like the post")
         if decision == "Y":
             readme = Readme(res)
-            readme.update_about(content)
+            res = readme.update_about(content)
+            return {"messages":res}
             
     return {"messages":"about repo"}
 graph.add_node("gen_insights",gen_insights)

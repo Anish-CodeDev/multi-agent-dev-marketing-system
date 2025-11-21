@@ -58,9 +58,11 @@ class Readme:
                 description=content
             )
             print("The about was updated")
+            return "The about section was updated"
         except Exception as e:
             print(repo.permissions)
             print("An error occurred: ",str(e))
+            return "An error occurred while updating the about section"
 
     
 
