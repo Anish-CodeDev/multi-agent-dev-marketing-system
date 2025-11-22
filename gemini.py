@@ -101,9 +101,22 @@ def decide_intermediate_step_using_msg(message,out_from_agent):
             6-> None of the above actions are suitable
             User's goal: {message}
             Output from agent: {out_from_agent}
-            The regular flow is: generate insights->select repos which have less stars->modify the readme files->post on various platforms like twitter.
-            Just return the index of the selected action without including any triple backticks
-            """
+
+            RETURN 6 IF YOU FEEL YOU HAVE SATISFIED THE USER'S QUESTION.
+
+            The order of actions is Feedback->Insight->About Repo->Content->Distribution    
+
+        Donot execute these agents more than once(no repetetion)    
+
+        Also Don't ever move backwards(Using the agents preceeding the order) meaning if you have executed the content agent, don't execute the insight agent again.
+
+        This order is wrong: Insight-> Feedback
+        This order is wrong: Content-> About Repo
+
+        For example if you need to execute the content agent, insight agent must be already executed with the positive response.
+
+        Just return the index of the selected action without including any triple backticks
+        """
         ]
     )
     return res.text

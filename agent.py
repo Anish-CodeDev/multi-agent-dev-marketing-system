@@ -35,9 +35,19 @@ def agent(state:AgentState):
         5 → Feedback Agent - analyzes engagement (stars, likes, comments).
 
         The order of actions is Feedback->Insight->About Repo->Content->Distribution    
+
         Donot execute these agents more than once(no repetetion)    
+
+        Also Don't ever move backwards(Using the agents preceeding the order) meaning if you have executed the content agent, don't execute the insight agent again.
+
+        This order is wrong: Insight-> Feedback
+        This order is wrong: Content-> About Repo
+        
         For example if you need to execute the content agent, insight agent must be already executed with the positive response.
-        If you feel you have satisfied the user's question return END ie, your actions fulfil the user's requirements                                                    
+        
+        If you feel you have fulfilled the user's question return END(No INDEX NUMBER) ie, your actions fulfill the user's requirements.
+        You don't have to perform any action beyond the user's requirements.
+        
         Return with the index of the agent selected
             """)
     response = llm.invoke([instruction] + state['messages'])
@@ -266,7 +276,7 @@ if __name__ == "__main__":
     user_inp = input("User: ")
     while user_inp !='exit':
         conversational_history.append(HumanMessage(content=user_inp))
-        result = app.invoke({"messages":conversational_history})
+        result = app.invoke({"messages":conversational_history[-3:]})
         conversational_history = result['messages']
         print("AI: ",dict(conversational_history[-1])['content'])
         user_inp = input("User: ")

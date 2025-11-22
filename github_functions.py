@@ -103,5 +103,6 @@ def get_stars(username):
 
 
 if __name__ == "__main__":
-    readme = Readme("multi-agent-dev-marketing-system")
-    readme.update_about("test")
+    #readme = Readme("multi-agent-dev-marketing-system")
+    #readme.update_about("test")
+    print(get_stars("Anish-CodeDev"))
