@@ -53,5 +53,20 @@ This process emphasizes **Agentic AI Evaluation Metrics** by aiming to improve e
 *   **Ethical AI Considerations:** Developing guidelines for responsible content generation and **Agent Ethics and Safety**.
 
 ## Installation & Usage
+1. Navigate to the repo folder
+ `cd multi-agent-dev-marketing-system`
+2. Create a virtual environment
+3. Install all the dependencies
+   
+   `pip install -r "requirements.txt"`
 
-Detailed instructions for setting up, configuring, and running this agentic system will be provided, focusing on demonstrating the practical application of these **Agentic AI Architectures**.
+4. Create an env file(.env), mention the following env variables there
+    GOOGLE_API_KEY="Your API_KEY"
+    GITHUB_TOKEN="Your PAT"
+    BEARER_TOKEN="BEARER TOKEN FROM TWITTER DEVELOPER PORTAL"
+    API_KEY="API KEY FROM TWITTER DEVELOPER PORTAL"
+    API_SECRET="API SECRET FROM TWITTER DEVELOPER PORTAL"
+    ACCESS_TOKEN="ACCESS TOKEN FROM TWITTER DEVELOPER PORTAL"
+    ACCESS_TOKEN_SECRET="ACCESS TOKEN SECRET FROM TWITTER DEVELOPER PORTAL"
+5. Run `python agent.py`
+   
